@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, SafeAreaView, StyleSheet, KeyboardAvoidingView } from 'react-native'
-import { Text, Button } from 'galio-framework'
+import { Text, Button, Toast } from 'galio-framework'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Item, Input, Label } from 'native-base'
 import Textarea from 'react-native-textarea';
@@ -49,6 +49,7 @@ export default ({ navigation }) => {
         priority: '',
         due_date: new Date(currDate).toLocaleDateString()
     })
+    const [showNotif, setShowNotif] = useState(false)
 
     const [addNewTodo, { data }] = useMutation(ADD_TODO, {
         refetchQueries: [{
@@ -74,7 +75,10 @@ export default ({ navigation }) => {
             newTask.due_date == '' ||
             newTask.priority == ''
         ) {
-            console.log('test')
+            setShowNotif(true)
+            setTimeout(() => {
+                setShowNotif(false)
+            }, 3000)
         } else {
             addNewTodo({
                 variables: {
@@ -91,13 +95,22 @@ export default ({ navigation }) => {
                 due_date: new Date(currDate).toLocaleDateString()
             })
             navigation.navigate('tabbar', {
-                screen: 'homepage'
+                screen: 'homepage',
+                params: { isAdded: true }
             })
         }
     }
 
     return (
         <View style={{ flex: 1 }}>
+            <Toast
+                isShow={showNotif}
+                positionOffset={50}
+                positionIndicator="top"
+                color="#eb4d4b"
+            >
+                <Text style={{ color: '#fff' }}>Please fill the field correctly!</Text>
+            </Toast>
             <LinearGradient
                 start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
                 colors={['#CF8BF3', '#A770EF', '#FDB99B', '#FDB99B']}

@@ -96,7 +96,7 @@ export default ({ route, navigation }) => {
                 style={{ flex: 1 }}
             >
                 <SafeAreaView style={{ flex: 1 }}>
-                    <TouchableOpacity onPress={_ => navigation.navigate('homepage')}>
+                    <TouchableOpacity onPress={_ => navigation.navigate('tabbar', { screen: 'homepage', params: { isAdded: false } })}>
                         <Icon name="arrow-back" type="ion-icon" size={30} color="#30336b" style={styles.back} />
                     </TouchableOpacity>
                     <View style={styles.header}>

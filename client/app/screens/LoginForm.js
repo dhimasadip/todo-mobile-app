@@ -51,7 +51,8 @@ export default ({ navigation }) => {
             setInput({ username: '', password: '' })
             setInputRegister({ name: '', username: '', password: '' })
             navigation.navigate('tabbar', {
-                screen: 'homepage'
+                screen: 'homepage',
+                params: { isAdded: false }
             })
         } else if (data && !data.getUser) {
             setIsShow(true)

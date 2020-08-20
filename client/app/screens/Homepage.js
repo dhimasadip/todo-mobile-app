@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
-import { Text, Button } from 'galio-framework'
+import { Text, Button, Toast } from 'galio-framework'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSelector, useDispatch } from 'react-redux';
 import CardContent from '../components/CardContent'
@@ -21,11 +21,12 @@ const GET_TODO = gql`
 `
 
 
-export default ({ navigation }) => {
+export default ({ navigation, route }) => {
     const dispatch = useDispatch()
     const { todos } = useSelector(state => state.todoReducer)
     const { user } = useSelector(state => state.userReducer)
-    
+    let { isAdded } = route.params
+    const [isShow, setIsShow] = useState(false)
     let [refetchTodo, { loading, error }] = useLazyQuery(GET_TODO, {
         onCompleted: datas => {
             dispatch(getTodos(datas.getTodo))
@@ -43,11 +44,29 @@ export default ({ navigation }) => {
         }
     }, [user])
 
+    useEffect(() => {
+        if(isAdded) {
+            setIsShow(true)
+            setTimeout(() => {
+                setIsShow(false)
+                isAdded = false
+            }, 3000)
+        }
+    }, [isAdded])
+
     if (loading) return <Text p>Loading...</Text>
     if (error) return <Text p>ERROR</Text>
 
     return (
         <View style={{ flex: 1 }}>
+            <Toast
+                isShow={isShow}
+                positionOffset={55}
+                positionIndicator="top"
+                color="#00b894"
+            >
+                <Text style={{ color: '#fff' }}>Successfully added new todo!</Text>
+            </Toast>
             <LinearGradient
                 start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
                 colors={['#CF8BF3', '#A770EF', '#FDB99B', '#FDB99B']}
